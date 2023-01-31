@@ -95,8 +95,9 @@ WHERE title ILIKE '%Analyst%';
 
 SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs
-WHERE title NOT ILIKE '%Analyst%'
-	OR title NOT ILIKE '%Analytics%';
+WHERE title IS NOT NULL
+	AND (title NOT ILIKE '%Analyst%'
+	OR title NOT ILIKE '%Analytics%');
 	
 --- BONUS. You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
 --- - Disregard any postings where the domain is NULL. 
@@ -109,4 +110,4 @@ WHERE days_since_posting > 21
 	AND domain IS NOT NULL
 GROUP BY domain
 ORDER BY hard_to_fill_job_number DESC
-LIMIT 3;
+LIMIT 4;
