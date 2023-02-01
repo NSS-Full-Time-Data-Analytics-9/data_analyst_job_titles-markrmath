@@ -7,7 +7,8 @@ FROM data_analyst_jobs;
 
 SELECT *
 FROM data_analyst_jobs
-LIMIT 10;
+LIMIT 1
+OFFSET 9;
 
 --- What company is associated with the job posting on the 10th row? ExxonMobil
 
@@ -19,7 +20,7 @@ WHERE location = 'TN';
 
 --- Q3b. How many are there in either Tennessee or Kentucky?
 
-SELECT COUNT (title) AS number_of_job_postings
+SELECT COUNT (title) AS number_of_relevant_job_postings
 FROM data_analyst_jobs
 WHERE location IN ('KY','TN');
 
@@ -27,7 +28,8 @@ WHERE location IN ('KY','TN');
 
 SELECT COUNT (title) AS number_of_hq_job_postings
 FROM data_analyst_jobs
-WHERE location = 'TN' AND star_rating > 4;
+WHERE location = 'TN'
+	AND star_rating > 4;
 
 --- Q5.	How many postings in the dataset have a review count between 500 and 1000?
 
@@ -40,13 +42,14 @@ WHERE review_count BETWEEN 500 AND 1000;
 SELECT location AS state, AVG(star_rating) AS avg_rating
 FROM data_analyst_jobs
 GROUP BY location
+HAVING AVG(star_rating) IS NOT NULL
 ORDER BY avg_rating DESC;
 
 --- Q6b. Which state shows the highest average rating? Nebraska
 
 --- Q7.	Select unique job titles from the data_analyst_jobs table.
 
-SELECT DISTINCT(title)
+SELECT DISTINCT(title) AS unique_jobs
 FROM data_analyst_jobs;
 
 --- Q7b. How many are there?
@@ -95,19 +98,19 @@ WHERE title ILIKE '%Analyst%';
 
 SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs
-WHERE title IS NOT NULL
-	AND (title NOT ILIKE '%Analyst%'
-	OR title NOT ILIKE '%Analytics%');
+WHERE title NOT ILIKE '%Analyst%'
+	AND title NOT ILIKE '%Analytics%';
 	
 --- BONUS. You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks. 
 --- - Disregard any postings where the domain is NULL. 
 --- - Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
----  - Which three industries are in the top 4 on this list?
+---  - Which three (?) industries are in the top 4 (???) on this list?
 
 SELECT domain, COUNT(title) AS hard_to_fill_job_number
 FROM data_analyst_jobs
 WHERE days_since_posting > 21
 	AND domain IS NOT NULL
+	AND skill ILIKE '%SQL%'
 GROUP BY domain
 ORDER BY hard_to_fill_job_number DESC
 LIMIT 4;
